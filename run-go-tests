@@ -1,0 +1,31 @@
+#!/bin/bash
+set -e
+
+# Jenkins shell script example (you MUST use -v for go2xunit to work):
+#
+# wget -o run-go-tests https://raw.githubusercontent.com/IMQS/docker-ci-tools/master/run-go-tests
+# bash ./run-go-tests "$(cat $SSH_KEY)" go test -v github.com/IMQS/imqsauth/auth
+#
+# JUnit results are in test-output
+
+# Example for testing this script locally:
+# -- Comment out the 'wget', and uncomment the 'cp' that follows it
+# cd ~/dev/imqsauth
+# ~/dev/docker-ci-tools/run-go-tests "$(cat ~/.ssh/id_rsa)" go test -v github.com/IMQS/imqsauth/auth
+
+SSH_KEY="$1"
+shift
+GOTEST_ARGS="$@"
+SEED=$(date +%s.%N)
+IMAGE=test-$SEED
+
+# This is some deep meta!
+wget -o Dockerfile-gotest https://raw.githubusercontent.com/IMQS/docker-ci-tools/master/go-test/Dockerfile
+
+# Useful when testing this script (comment out the wget above):
+#cp ~/dev/docker-ci-tools/go-test/Dockerfile Dockerfile-gotest
+
+docker build -t $IMAGE -f Dockerfile-gotest --build-arg "SSH_KEY=$SSH_KEY" .
+
+mkdir -p test-output
+docker run --rm -v `pwd`/test-output:/test-output $IMAGE /bin/bash -c "cd /test && $GOTEST_ARGS | go2xunit -output /test-output/test.xml"
