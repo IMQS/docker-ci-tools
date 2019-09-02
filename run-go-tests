@@ -3,7 +3,7 @@ set -e
 
 # Jenkins shell script example (you MUST use -v for go2xunit to work):
 #
-# wget -o run-go-tests https://raw.githubusercontent.com/IMQS/docker-ci-tools/master/run-go-tests
+# wget -O run-go-tests https://raw.githubusercontent.com/IMQS/docker-ci-tools/master/run-go-tests
 # bash ./run-go-tests "$(cat $SSH_KEY)" go test -v github.com/IMQS/imqsauth/auth
 #
 # JUnit results are in test-output
@@ -20,7 +20,7 @@ SEED=$(date +%s.%N)
 IMAGE=test-$SEED
 
 # This is some deep meta!
-wget -o Dockerfile-gotest https://raw.githubusercontent.com/IMQS/docker-ci-tools/master/go-test/Dockerfile
+wget -O Dockerfile-gotest https://raw.githubusercontent.com/IMQS/docker-ci-tools/master/go-test/Dockerfile
 
 # Useful when testing this script (comment out the wget above):
 #cp ~/dev/docker-ci-tools/go-test/Dockerfile Dockerfile-gotest
